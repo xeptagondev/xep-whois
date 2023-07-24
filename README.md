@@ -173,8 +173,8 @@ for (let i = 0; i < res.length; i++) {
 
 # Documentation
 
-The API documentation can be found here: [xep-whois API]('https://xeptagondev.github.io/xep-whois/')
+The API documentation can be found here: [xep-whois API](https://xeptagondev.github.io/xep-whois/)
 
 # License
 
-xep-whois is available under the [MIT License]('https://opensource.org/license/mit/')
+xep-whois is available under the [MIT License](https://opensource.org/license/mit/)
