@@ -267,3 +267,7 @@ The API documentation can be found here: [Xep-whois API](https://xeptagondev.git
 # License
 
 Xep-whois is available under the [BSD (3-Clause) License](https://opensource.org/license/bsd-3-clause/)
+
+# Contact us
+
+For further information please reach us at: [info@xeptagon.com](mailto:info@xeptagon.com)
