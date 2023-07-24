@@ -49,7 +49,7 @@ var extractValues = {
 
 Since 'Domain Status' is a field which can have multiple entries within the response, by providing an empty Array as its value, all the 'Domain Status' values can be extracted.
 
-The parsed data of the response will be the following;
+The parsed data of the response will be as following;
 
 ```json
 {
