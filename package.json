@@ -5,10 +5,33 @@
     "name": "Oshan Mendis",
     "email": "oshanm@xeptagon.com"
   },
-  "description": "Xeptagon WhoIs",
+  "description": "A lightweight WHOIS client",
   "main": "./dist/esm/index.js",
   "module": "./dist/cjs/index.js",
   "license": "MIT",
+  "keywords": [
+    "whois",
+    "domain",
+    "xep-whois",
+    "Xeptagon",
+    "lookup",
+    "who",
+    "is",
+    "name",
+    "node",
+    "nodejs",
+    "js",
+    "javascript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xeptagondev/xep-whois"
+  },
+  "homepage": "https://github.com/xeptagondev/xep-whois",
+  "bugs": {
+    "url": "https://github.com/xeptagondev/xep-whois/issues"
+  },
+
   "scripts": {
     "devBuild": "yarn install && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "build": "yarn install --production && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",

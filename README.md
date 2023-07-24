@@ -1,5 +1,5 @@
 # Xep-Whois
-xep-whois is a highly customizable whois library which collects/parses given whois queries from text-based whois servers.
+xep-whois is a highly customizable whois library which collects/parses given whois queries from text-based whois servers. Supports almost all the text-based WHOIS servers for any TLD
 
 # Installation
 
