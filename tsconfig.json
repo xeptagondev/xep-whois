@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
   },
   "include": [
-    "./src",
+    "./src/**/*",
     "./parameters.json",
     "./whois-servers.json"
   ],
