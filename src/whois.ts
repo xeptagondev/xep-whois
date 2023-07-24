@@ -2,8 +2,8 @@ import { SocksClient, SocksClientOptions } from 'socks';
 import Net from 'net';
 
 const fetch = require('node-fetch');
-var SERVERS = require('../whois-servers.json');
-var PARAMETERS = require('../parameters.json');
+var SERVERS = require('./../whois-servers.json');
+var PARAMETERS = require('./../parameters.json');
 
 var IANA_CHK_URL = 'https://www.iana.org/whois?q=';
 
