@@ -258,7 +258,7 @@ export class WhoIsParser {
 
 
 /**
- * Connects to the provided {@link server}:{@link port} through TCP (Through a proxy if a proxy is given), run the WhoIs query and returns the response
+ * Connects to the provided {@link server}:{@link port} through TCP (through a proxy if a proxy is given), run the WhoIs query and returns the response
  * 
  * @param domain Domain name
  * @param queryOptions Query options which can be used with the specific WhoIs server to get the complete response

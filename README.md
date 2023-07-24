@@ -1,5 +1,37 @@
-# Xep-Whois
-xep-whois is a highly customizable whois library which collects/parses given whois queries from text-based whois servers. Supports almost all the text-based WHOIS servers for any TLD
+# Xeptagon WHOIS
+Xep-whois is a highly customizable WHOIS library which collects and parses given WHOIS queries from text-based WHOIS servers. [whois-servers.json]() contains the WHOIS servers for the specific TLDs (Top Level Domains) which is used to collect data from for the submitted domains. In scenarios where [whois-servers.json]() does not contain the WHOIS server for the TLD, then the [IANA WHOIS server]() is used to query the TLD and get the WHOIS server for the submitted domain.
+
+Xep-whois then creates a TCP connection to the WHOIS-SERVER:PORT (default port 43) and sends the WHOIS query for the submitted domain and collects the response. The connection can also be established through a provided proxy server (Socks4 or Socks5) as well (with or without authentication), where the proxy IP will be used to collect the WHOIS data for the domain.
+
+The user can decide which data they want to extract from the WHOIS response of the domain by submitting a key-value paired Object alongside other options. As for an example, if the WHOIS response conatins the following fields which the user needs to extract from the response;
+
+      | Field           | Has multiple entries  |
+      | --------------- | --------------------- |
+      | Domain Name     | No                    |
+      | Domain Status   | Yes                   |
+      | Registrar       | No                    |
+
+The user can define a object consisting of the above mentioned keys and their initial values as following, which can be passed as an option to Xep-whois;
+
+```typescript
+var extractValues = {
+      'Domain Name': '',
+      'Domain Status': [],
+      'Registrar': '',
+}
+```
+
+Since 'Domain Status' is a field which can have multiple entries within the response, by providing an empty Array as its value, all the 'Domain Status' values can be extracted.
+
+Apart from these, Xep-whois contains much more features overall, which are not limited to;
+
+      1) Collecting raw WHOIS data from text-based WHOIS servers
+      2) Hundreds of TLDs are supported (Almost all the text-based WHOIS servers are supported)
+      3) Parse WHOIS response to a key-value paired Object
+      4) Proxy support (Socks4 and Socks5) to collect WHOIS data
+      5) Ability to define which data needs to be extracted from the response
+      6) Parallelized batch processing is supported
+      7) Define TLD, WHOIS server/port, character encoding to collect and format the WHOIS responses
 
 # Installation
 
@@ -173,8 +205,15 @@ for (let i = 0; i < res.length; i++) {
 
 # Documentation
 
-The API documentation can be found here: [xep-whois API](https://xeptagondev.github.io/xep-whois/)
+The API documentation can be found here: [Xep-whois API](https://xeptagondev.github.io/xep-whois/)
+
+# Acknowledgements
+
+- [Node fetch](https://github.com/node-fetch/node-fetch)
+- [Socks](https://github.com/JoshGlazebrook/socks/)
+- [TypeDoc](https://typedoc.org/)
+- [Jest](https://jestjs.io/)
 
 # License
 
-xep-whois is available under the [MIT License](https://opensource.org/license/mit/)
+xep-whois is available under the [BSD (3-Clause) License](https://opensource.org/license/bsd-3-clause/)
