@@ -266,4 +266,4 @@ The API documentation can be found here: [Xep-whois API](https://xeptagondev.git
 
 # License
 
-xep-whois is available under the [BSD (3-Clause) License](https://opensource.org/license/bsd-3-clause/)
+Xep-whois is available under the [BSD (3-Clause) License](https://opensource.org/license/bsd-3-clause/)
