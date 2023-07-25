@@ -8,12 +8,13 @@
     "outDir": "./dist/esm",
     "declaration": true,
     "resolveJsonModule": true,
+    "sourceMap": true
   },
   "include": [
     "./src/**/*",
     "./parameters.json",
     "./whois-servers.json"
-  ],
+, "index.ts"  ],
   "exclude": [
     "**/*.test.ts",
   ]

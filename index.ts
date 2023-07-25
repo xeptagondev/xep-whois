@@ -1,4 +1,4 @@
-import { ProxyData, ProxyType, WhoIsOptions, WhoIsParser, WhoIsResponse, batchWhois, tcpWhois, whois } from './whois';
+import { ProxyData, ProxyType, WhoIsOptions, WhoIsParser, WhoIsResponse, batchWhois, tcpWhois, whois } from './src/whois';
 
 export {
     ProxyType,
