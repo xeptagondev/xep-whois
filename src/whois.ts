@@ -32,7 +32,12 @@ async function findWhoIsServer(tld: string): Promise<string> {
     return '';
 
 }
-
+/**
+ * Copy an Object with its values
+ * 
+ * @param obj Object which needs to be copied
+ * @returns A copy of the object
+ */
 function shallowCopy<T extends any>(obj: T): T {
     if (Array.isArray(obj)) {
       return obj.slice() as T; // Clone the array
