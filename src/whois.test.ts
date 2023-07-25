@@ -71,14 +71,15 @@ async function defineDataToParseBatch(): Promise<boolean> {
     const options: WhoIsOptions = {
         parseData: {
             'Domain Name': '',
-            'Registrar': ''
+            'Registrar': '',
+            'Domain Status': []
         }  
     } 
     
     const res = await batchWhois(domains, true, 3, true, options);
 
     for (let i = 0; i < res.length; i++) {
-        console.log(res[i].parsedData);
+        console.log(res[i]);
     }
     // console.log(res);
     return true;

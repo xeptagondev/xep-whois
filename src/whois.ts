@@ -33,6 +33,22 @@ async function findWhoIsServer(tld: string): Promise<string> {
 
 }
 
+function shallowCopy<T extends any>(obj: T): T {
+    if (Array.isArray(obj)) {
+      return obj.slice() as T; // Clone the array
+    } else if (typeof obj === 'object' && obj !== null) {
+      const copy: any = {};
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          copy[key] = shallowCopy(obj[key]);
+        }
+      }
+      return copy as T;
+    } else {
+      return obj; // For primitive values, return as is
+    }
+}
+
 /**
  * Get whois server of the tld from servers list
  * 
@@ -405,7 +421,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
         } else {
             let outputData: any | null = null;
             if (options && options.parseData) {
-                outputData = Object.assign(options.parseData);
+                outputData = shallowCopy(options.parseData);
             }
             try {
                 const parsedData = WhoIsParser.parseData(rawData, outputData);
