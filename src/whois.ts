@@ -405,7 +405,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
         } else {
             let outputData: any | null = null;
             if (options && options.parseData) {
-                outputData = Object.create(options.parseData);
+                outputData = Object.assign(options.parseData);
             }
             try {
                 const parsedData = WhoIsParser.parseData(rawData, outputData);
