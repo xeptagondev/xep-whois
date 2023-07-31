@@ -110,7 +110,7 @@ var res = await whois(domain);
 console.log(res);
 ```
 
-## Define WhoIs server and parse data
+## Define WHOIS server and parse data
 
 ```typescript
 import { whois, WhoIsOptions } from 'xep-whois';
@@ -136,7 +136,7 @@ import { whois, WhoIsOptions } from 'xep-whois';
 
 var domain = 'google.com';
 
-// Parse 'Domain Name' (string), 'Registrar' (string) and 'Domain Status' (Array - if multiple status fields are present) fields from the WhoIs response
+// Parse 'Domain Name' (string), 'Registrar' (string) and 'Domain Status' (Array - if multiple status fields are present) fields from the WHOIS response
 var options: WhoIsOptions = {
       parseData: {
             'Domain Name': '',
@@ -150,7 +150,7 @@ var res = await whois(domain, true, options);
 console.log(res.parsedData);
 ```
 
-## Collect WhoIs data through a proxy (SOCKS4 or SOCKS5)
+## Collect WHOIS data through a proxy (SOCKS4 or SOCKS5)
 
 ```typescript
 import { whois, WhoIsOptions } from 'xep-whois';
