@@ -31,11 +31,11 @@ URL of the ICANN Whois Inaccuracy Complaint Form: https://www.icann.org/wicf/
 
 And the following data needs to be extracted from the above response;
 
-      | Field           | Has multiple entries  |
-      | --------------- | --------------------- |
-      | Domain Name     | No                    |
-      | Domain Status   | Yes                   |
-      | Registrar       | No                    |
+      | Field           | Data Type       | Has multiple entries  |
+      | --------------- | --------------- | --------------------- |
+      | Domain Name     | String          | No                    |
+      | Domain Status   | String          | Yes                   |
+      | Registrar       | String          | No                    |
 
 The user can define a object consisting of the above mentioned keys and their initial values as following, which can be passed as an option to Xep-whois;
 
@@ -87,11 +87,15 @@ br.com,cn.com,de.com,eu.com,gb.com,gb.net,gr.com,hu.com,in.net,no.com,qc.com,ru.
 
 ## Global
 
-> $ npm install -g xep-whois
+```shell 
+npm install -g xep-whois 
+```
 
 ## Local
 
-> $ npm install xep-whois
+```shell 
+npm install xep-whois 
+```
 
 # Examples
 
@@ -168,7 +172,7 @@ var res = await whois(domain, true, options);
 console.log(res.parsedData);
 ```
 
-## Collect WhoIs data through a proxy (With authentication)
+## Collect WHOIS data through a proxy (With authentication)
 
 ```typescript
 import { whois, WhoIsOptions } from 'xep-whois';
@@ -194,7 +198,7 @@ var res = await whois(domain, true, options);
 console.log(res.parsedData);
 ```
 
-## Collect WhoIs data for multiple domains (parallelly with options)
+## Collect WHOIS data for multiple domains (parallelly with options)
 ```typescript
 import { batchWhois, WhoIsOptions } from 'xep-whois';
 
@@ -202,7 +206,7 @@ var domains = ['google.com', 'abc.com', 'example.com'];
 var isParallel = true;
 var threads = 3;
 
-// Parse 'Domain Name' (string), 'Registrar' (string) and 'Domain Status' (Array - if multiple status fields are present) fields from the WhoIs response
+// Parse 'Domain Name' (string), 'Registrar' (string) and 'Domain Status' (Array - if multiple status fields are present) fields from the WHOIS response
 var options: WhoIsOptions = {
       parseData: {
             'Domain Name': '',
@@ -218,7 +222,7 @@ for (let i = 0; i < res.length; i++) {
 }
 ```
 
-## Collect WhoIs data for multiple domains through a proxy (parallelly with options)
+## Collect WHOIS data for multiple domains through a proxy (parallelly with options)
 ```typescript
 import { batchWhois, WhoIsOptions } from 'xep-whois';
 
@@ -230,7 +234,7 @@ var proxyPort = 67401;
 var proxyUsername = 'username';
 var proxyPassword = 'password';
 
-// Parse 'Domain Name' (string), 'Registrar' (string) and 'Domain Status' (Array - if multiple status fields are present) fields from the WhoIs response
+// Parse 'Domain Name' (string), 'Registrar' (string) and 'Domain Status' (Array - if multiple status fields are present) fields from the WHOIS response
 var options: WhoIsOptions = {
       parseData: {
             'Domain Name': '',
