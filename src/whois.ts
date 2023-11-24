@@ -472,9 +472,11 @@ export async function batchWhois(domains: string[], parallel: boolean = false, t
 
         for (let i = 0; i < domains.length; i+= threads) {
             const batch = domains.slice(i, i+threads);
-            response = await Promise.all(batch.map(async domain => {
+            let resp = await Promise.all(batch.map(async domain => {
                 return await whois(domain, parse, options);
-            }))
+            }));
+
+            response = response.concat(resp);
         }
     } else {
         for (let i = 0; i < domains.length; i++) {
