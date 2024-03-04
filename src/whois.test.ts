@@ -1,5 +1,6 @@
 import { ProxyType, WhoIsOptions, batchWhois, whois } from './whois';
 
+
 async function hostDefinedWhoIs(): Promise<boolean> {
     const domain = 'google.tv'
     const options: WhoIsOptions = {
@@ -85,6 +86,14 @@ async function defineDataToParseBatch(): Promise<boolean> {
     return true;
 }
 
+async function getByIp(): Promise<boolean> {
+    const domain = '1.1.1.1'
+
+    const res = await whois(domain, true);
+
+    return res._raw.length>400;
+}
+
 
 
 test('whois (host defined)', async () => {
@@ -110,4 +119,9 @@ test('whois (proxy data provided - With auth)', async () => {
 test('batch whois (parse data defined)', async () => {
     const d = await defineDataToParseBatch();
     expect(d).toBeDefined();
+});
+
+test.only('is fetching by IP working', async () => {
+    const d = await getByIp();
+    expect(d).toBe(true);
 });

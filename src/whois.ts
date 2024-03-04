@@ -292,12 +292,12 @@ export class WhoIsParser {
 export async function tcpWhois(domain: string, queryOptions: string, server: string, port: number, encoding: string, proxy: ProxyData | null): Promise<string> {
     const decoder = new TextDecoder(encoding);
     const encoder = new TextEncoder();
-    
     if (!proxy) {
         const socket = new Net.Socket();
         return new Promise((resolve, reject) => {
             try {
                 socket.connect({port: port, host: server}, function() {
+
                     if (queryOptions != '') {
                         socket.write(encoder.encode(`${queryOptions} ${domain}\r\n`));
                     } else {
@@ -384,11 +384,13 @@ export async function whois(domain: string, parse: boolean = false, options: Who
     var proxy: ProxyData | null;
     var encoding = 'utf-8';
 
+    var isIp = domain.match(/^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}$/);
+
     if (!options) {
-        tld = getTLD(domain);
+        tld = isIp ? domain : getTLD(domain);
         proxy = null;
     } else {
-        tld = options.tld ? options.tld : getTLD(domain);
+        tld = options.tld ? options.tld : (isIp ? domain : getTLD(domain));
         encoding = options.encoding ? options.encoding : 'utf-8';
         proxy = options.proxy ? options.proxy : null;
         server = options.server ? options.server : '';
@@ -396,7 +398,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
     }
 
     if (server == '') {
-        let serverData = getWhoIsServer(tld);
+        let serverData = isIp ? undefined : getWhoIsServer(tld);
         if (!serverData) {
             console.debug(`No WhoIs server found for TLD: ${tld}! Attempting IANA WhoIs database for server!`);
             serverData = await findWhoIsServer(tld);
