@@ -2,17 +2,23 @@ import { SocksClient, SocksClientOptions } from 'socks';
 import Net from 'net';
 
 const fetch = require('node-fetch');
-var SERVERS = require('./../whois-servers.json');
-var PARAMETERS = require('./../parameters.json');
+const SERVERS = require('./../whois-servers.json');
+const PARAMETERS = require('./../parameters.json');
 
-var IANA_CHK_URL = 'https://www.iana.org/whois?q=';
+const IANA_CHK_URL = 'https://www.iana.org/whois?q=';
 
 
-type LoggerInterface = {
+export type LoggerInterface = {
+    info(...data: any[]): void;
     debug(...data: any[]): void;
     error(...data: any[]): void;
 }
+
 const loggerLocal = {
+    info(...data: any[]): void{
+        console.info(data);
+    },
+
     debug(...data: any[]): void{
         console.debug(data);
     },
@@ -90,8 +96,8 @@ function getWhoIsServer(tld: string): string|undefined {
  * @returns TLD
  */
 function getTLD(domain: string, logger: LoggerInterface): string {
-    var tld = '';
-    var domainStr = domain;
+    let tld = '';
+    let domainStr = domain;
     while (true) {
         const domainData = domainStr.split('.');
         if (domainData.length < 2) {
@@ -234,11 +240,11 @@ export class WhoIsParser {
      * @returns Filled {@link outputData}
      */
     private static iterParse(rawData: string, outputData: any) {
-        var lastStr = '';
-        var lastField: string | null = null;
-        var lastLetter = '';
+        let lastStr = '';
+        let lastField: string | null = null;
+        let lastLetter = '';
 
-        for (var i = 0; i < rawData.length; i++) {
+        for (let i = 0; i < rawData.length; i++) {
             let letter = rawData[i];
             if (letter == '\n' || (lastLetter == ':' && letter == ' ')) {
                 if (lastStr.trim() in outputData) {
@@ -400,14 +406,14 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
  * @returns {@link WhoIsResponse}
  */
 export async function whois(domain: string, parse: boolean = false, options: WhoIsOptions | null = null, logger: LoggerInterface = loggerLocal): Promise<WhoIsResponse> {
-    var tld: string;
-    var port = 43;
-    var server = '';
-    var queryOptions: string;
-    var proxy: ProxyData | null;
-    var encoding = 'utf-8';
+    let tld: string;
+    let port = 43;
+    let server = '';
+    let queryOptions: string;
+    let proxy: ProxyData | null;
+    let encoding = 'utf-8';
 
-    var isIp = domain.match(/^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}$/);
+    const isIp = domain.match(/^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}$/);
 
     if (!options) {
         tld = isIp ? domain : getTLD(domain, logger);
@@ -460,6 +466,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
                     parsedData: parsedData
                 };
             } catch (err) {
+                logger.info(err);
                 return {
                     _raw: rawData,
                     parsedData: null
@@ -468,6 +475,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
             
         }
     } catch (err) {
+        logger.info(err);
         return {
             _raw: '',
             parsedData: null
@@ -488,7 +496,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
  * @returns Array of {@link WhoIsResponse} for all the domains. Order is not guaranteed
  */
 export async function batchWhois(domains: string[], parallel: boolean = false, threads: number = 1, parse: boolean = false, options: WhoIsOptions | null = null): Promise<WhoIsResponse[]> {
-    var response: WhoIsResponse[] = [];
+    let response: WhoIsResponse[] = [];
 
     if (parallel) {
         if (threads > domains.length) {
