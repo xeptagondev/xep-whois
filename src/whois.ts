@@ -1,7 +1,8 @@
 import { SocksClient, SocksClientOptions } from 'socks';
 import Net from 'net';
 
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
+
 var SERVERS = require('./../whois-servers.json');
 var PARAMETERS = require('./../parameters.json');
 
