@@ -305,13 +305,19 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
                     }
                     
                 });
-
-                socket.on('data', (data) => {
-                    resolve(decoder.decode(data));
+                
+                const rawData: Uint8Array[] = [];
+                socket.on("data", (data) => {
+                    rawData.push(data);
                 });
-
-                socket.on('error', (error) => {
-                    reject(error);
+                
+                socket.on("end", () => {
+                    const allData = Buffer.concat(rawData);
+                    resolve(decoder.decode(allData));
+                });
+                
+                socket.on("error", (err) => {
+                    reject(err);
                 });
             } catch (e){
                 reject(e);
@@ -356,9 +362,15 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
                             encoder.encode(`${domain}\r\n`)
                         );
                     }
-
+                    
+                    const rawData: Uint8Array[] = [];
                     info?.socket.on('data', (data) => {
-                        resolve(decoder.decode(data));
+                        rawData.push(data);
+                    });
+                    
+                    info?.socket.on("end", () => {
+                        const allData = Buffer.concat(rawData);
+                        resolve(decoder.decode(allData));
                     });
 
                     info?.socket.resume();
