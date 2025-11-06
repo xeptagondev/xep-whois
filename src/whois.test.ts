@@ -1,113 +1,113 @@
-import { ProxyType, WhoIsOptions, batchWhois, whois } from './whois';
+import {ProxyType, WhoIsOptions, batchWhois, whois, LoggerInterface} from './whois';
 
-async function hostDefinedWhoIs(): Promise<boolean> {
-    const domain = 'google.tv'
-    const options: WhoIsOptions = {
-        server: "whois.nic.tv",
-        serverPort: 43     
-    }
+describe('whois test by domain name', () => {
+    test('whois (host defined)', async () => {
+        const domain = 'google.tv'
+        const options: WhoIsOptions = {
+            server: "whois.nic.tv",
+            serverPort: 43
+        }
 
-    const res = await whois(domain, true, options);
+        const res = await whois(domain, true, options);
+        expect(res._raw).toContain('Domain Name: google.tv')
+    });
 
-    console.log(res.parsedData);
+    test('whois (parse data defined)', async () => {
+        const domain = 'google.tv';
+        const options: WhoIsOptions = {
+            parseData: {
+                'Domain Name': '',
+                'Registrar': ''
+            }
+        }
 
-    return true;
-}
+        const res = await whois(domain, true, options);
 
-async function defineDataToParse(): Promise<boolean> {
-    const domain = 'google.tv';
-    const options: WhoIsOptions = {
-        parseData: {
-            'Domain Name': '',
-            'Registrar': ''
-        }  
-    } 
-    
-    const res = await whois(domain, true, options);
+        expect(res._raw).toContain('Domain Name: google.tv')
+    });
 
-    console.log(res.parsedData);
+    test('whois (proxy data provided - No auth)', async () => {
+        const domain = 'google.tv';
+        const options: WhoIsOptions = {
+            proxy: {
+                ip: '127.0.0.1',
+                port: 4145,
+                type: ProxyType.SOCKS5
+            }
+        }
+        const logger: LoggerInterface  = {
+            info : jest.fn(),
+            debug : jest.fn(),
+            error : jest.fn(),
+        }
 
-    return true;
-}
+        const res = await whois(domain, true, options, logger);
 
-async function defineProxy(): Promise<boolean> {
-    const domain = 'google.tv';
-    const options: WhoIsOptions = {
-        proxy: {
-            ip: '127.0.0.1',
-            port: 4145,
-            type: ProxyType.SOCKS5
-        } 
-    } 
+        expect(logger.info).toBeCalledWith(new Error('connect ECONNREFUSED 127.0.0.1:4145'));
+    });
 
-    const res = await whois(domain, true, options);
+    test('whois (proxy data provided - With auth)', async () => {
+        const domain = 'google.tv';
+        const options: WhoIsOptions = {
+            proxy: {
+                ip: '127.0.0.1',
+                port: 6397,
+                username: 'username',
+                password: 'password',
+                type: ProxyType.SOCKS5
+            }
+        }
+        const logger: LoggerInterface  = {
+            info : jest.fn(),
+            debug : jest.fn(),
+            error : jest.fn(),
+        }
 
-    console.log(res.parsedData);
+        const res = await whois(domain, true, options, logger);
 
-    return true;
-}
+        expect(logger.info).toBeCalledWith(new Error('connect ECONNREFUSED 127.0.0.1:6397'));
+    });
 
-async function defineProxyWithAuth(): Promise<boolean> {
-    const domain = 'google.tv';
-    const options: WhoIsOptions = {
-        proxy: {
-            ip: '127.0.0.1',
-            port: 6397,
-            username: 'username',
-            password: 'password',
-            type: ProxyType.SOCKS5
-        } 
-    } 
+    test('batch whois (parse data defined)', async () => {
+        const domains = ['google.tv', 'abc.com', 'facebook.tv'];
+        const options: WhoIsOptions = {
+            parseData: {
+                'Domain Name': '',
+                'Registrar': '',
+                'Domain Status': []
+            }
+        }
 
-    const res = await whois(domain, true, options);
+        const res = await batchWhois(domains, true, 3, true, options);
 
-    console.log(res.parsedData);
-
-    return true;
-}
-
-async function defineDataToParseBatch(): Promise<boolean> {
-    const domains = ['google.tv', 'abc.com', 'facebook.tv'];
-    const options: WhoIsOptions = {
-        parseData: {
-            'Domain Name': '',
-            'Registrar': '',
-            'Domain Status': []
-        }  
-    } 
-    
-    const res = await batchWhois(domains, true, 3, true, options);
-
-    for (let i = 0; i < res.length; i++) {
-        console.log(res[i]);
-    }
-    // console.log(res);
-    return true;
-}
-
-
-
-test('whois (host defined)', async () => {
-    const d = await hostDefinedWhoIs();
-    expect(d).toBeDefined();
+        for (let i = 0; i < res.length; i++) {
+            expect(Object.values(res[i].parsedData).length).toEqual(3);
+            expect(res[i].parsedData['Domain Name']).not.toBe('');
+        }
+    });
 });
 
-test('whois (parse data defined)', async () => {
-    const d = await defineDataToParse();
-    expect(d).toBeDefined();
-});
+describe('whois test by IP', () => {
+    test('is fetching by IP working', async () => {
+        const domain = '1.1.1.1'
 
-test('whois (proxy data provided - No auth)', async () => {
-    const d = await defineProxy();
-    expect(d).toBeDefined();
-});
+        const res = await whois(domain, true);
 
-test('whois (proxy data provided - With auth)', async () => {
-    const d = await defineProxyWithAuth();
-    expect(d).toBeDefined();
-});
+        expect(res._raw.length>400).toBe(true);
+    });
 
-test('batch whois (parse data defined)', async () => {
-    const d = await defineDataToParseBatch();
-    expect(d).toBeDefined();
+    test('is fetching by IP working (with specified logger)', async () => {
+        const domain = '1.1.1.1'
+
+        const logger: LoggerInterface  = {
+            info : jest.fn(),
+            debug : jest.fn(),
+            error : jest.fn(),
+        }
+
+        const res = await whois(domain, true, null, logger);
+
+        expect(logger.debug).toBeCalledTimes(2);
+        expect(res._raw.length>400).toBe(true);
+    });
 });

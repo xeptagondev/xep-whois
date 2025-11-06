@@ -2,18 +2,40 @@ import { SocksClient, SocksClientOptions } from 'socks';
 import Net from 'net';
 
 const fetch = require('node-fetch');
-var SERVERS = require('./../whois-servers.json');
-var PARAMETERS = require('./../parameters.json');
+const SERVERS = require('./../whois-servers.json');
+const PARAMETERS = require('./../parameters.json');
 
-var IANA_CHK_URL = 'https://www.iana.org/whois?q=';
+const IANA_CHK_URL = 'https://www.iana.org/whois?q=';
+
+
+export type LoggerInterface = {
+    info(...data: any[]): void;
+    debug(...data: any[]): void;
+    error(...data: any[]): void;
+}
+
+const loggerLocal = {
+    info(...data: any[]): void{
+        console.info(data);
+    },
+
+    debug(...data: any[]): void{
+        console.debug(data);
+    },
+
+    error(...data: any[]): void{
+        console.error(data);
+    }
+}
 
 /**
  * Find the WhoIs server for the TLD from IANA WhoIs service. The TLD is be searched and the HTML response is parsed to extract the WhoIs server
- * 
+ *
  * @param tld TLD of the domain
+ * @param logger
  * @returns WhoIs server which hosts the information for the domains of the TLD
  */
-async function findWhoIsServer(tld: string): Promise<string> {
+async function findWhoIsServer(tld: string, logger: LoggerInterface): Promise<string> {
     const chkURL = IANA_CHK_URL + tld
 
     try{
@@ -26,7 +48,7 @@ async function findWhoIsServer(tld: string): Promise<string> {
             }
         }
     } catch (err) {
-        console.error('Error in getting WhoIs server data from IANA', err);
+        logger.error('Error in getting WhoIs server data from IANA', err);
     }
     
     return '';
@@ -68,13 +90,14 @@ function getWhoIsServer(tld: string): string|undefined {
  * Extract TLD from domain name.
  * If the TLD is in whois-servers.json file, then the TLD is returned.
  * If TLD is not found within the file, then determined by taking the last element after splitting the domain name from '.'
- * 
+ *
  * @param domain Domain name
+ * @param logger
  * @returns TLD
  */
-function getTLD(domain: string): string {
-    var tld = '';
-    var domainStr = domain;
+function getTLD(domain: string, logger: LoggerInterface): string {
+    let tld = '';
+    let domainStr = domain;
     while (true) {
         const domainData = domainStr.split('.');
         if (domainData.length < 2) {
@@ -93,7 +116,7 @@ function getTLD(domain: string): string {
         return tld;
     }
 
-    console.debug('TLD is not found in server list. Returning last element after split as TLD!');
+    logger.debug('TLD is not found in server list. Returning last element after split as TLD!');
 
     const domainData = domain.split('.');
     return domainData[domainData.length-1];
@@ -217,11 +240,11 @@ export class WhoIsParser {
      * @returns Filled {@link outputData}
      */
     private static iterParse(rawData: string, outputData: any) {
-        var lastStr = '';
-        var lastField: string | null = null;
-        var lastLetter = '';
+        let lastStr = '';
+        let lastField: string | null = null;
+        let lastLetter = '';
 
-        for (var i = 0; i < rawData.length; i++) {
+        for (let i = 0; i < rawData.length; i++) {
             let letter = rawData[i];
             if (letter == '\n' || (lastLetter == ':' && letter == ' ')) {
                 if (lastStr.trim() in outputData) {
@@ -292,12 +315,13 @@ export class WhoIsParser {
 export async function tcpWhois(domain: string, queryOptions: string, server: string, port: number, encoding: string, proxy: ProxyData | null): Promise<string> {
     const decoder = new TextDecoder(encoding);
     const encoder = new TextEncoder();
-    
     if (!proxy) {
         const socket = new Net.Socket();
+        let ret = '';
         return new Promise((resolve, reject) => {
             try {
-                socket.connect({port: port, host: server}, function() {
+                socket.connect({port: port, host: server, noDelay: false}, function() {
+
                     if (queryOptions != '') {
                         socket.write(encoder.encode(`${queryOptions} ${domain}\r\n`));
                     } else {
@@ -307,11 +331,15 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
                 });
 
                 socket.on('data', (data) => {
-                    resolve(decoder.decode(data));
+                    ret = ret + decoder.decode(data);
                 });
 
                 socket.on('error', (error) => {
                     reject(error);
+                });
+
+                socket.on('end', () => {
+                    resolve(ret);
                 });
             } catch (e){
                 reject(e);
@@ -370,25 +398,28 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
 
 /**
  * Collect WhoIs data for the mentioned {@link domain}. Parse the reveived response if {@link parse} is true, accordingly.
- * 
+ *
  * @param domain Domain name
  * @param parse Whether the raw text needs to be parsed/formatted or not
  * @param options {@link WhoIsOptions}
+ * @param logger
  * @returns {@link WhoIsResponse}
  */
-export async function whois(domain: string, parse: boolean = false, options: WhoIsOptions | null = null): Promise<WhoIsResponse> {
-    var tld: string;
-    var port = 43;
-    var server = '';
-    var queryOptions: string;
-    var proxy: ProxyData | null;
-    var encoding = 'utf-8';
+export async function whois(domain: string, parse: boolean = false, options: WhoIsOptions | null = null, logger: LoggerInterface = loggerLocal): Promise<WhoIsResponse> {
+    let tld: string;
+    let port = 43;
+    let server = '';
+    let queryOptions: string;
+    let proxy: ProxyData | null;
+    let encoding = 'utf-8';
+
+    const isIp = domain.match(/^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}$/);
 
     if (!options) {
-        tld = getTLD(domain);
+        tld = isIp ? domain : getTLD(domain, logger);
         proxy = null;
     } else {
-        tld = options.tld ? options.tld : getTLD(domain);
+        tld = options.tld ? options.tld : (isIp ? domain : getTLD(domain, logger));
         encoding = options.encoding ? options.encoding : 'utf-8';
         proxy = options.proxy ? options.proxy : null;
         server = options.server ? options.server : '';
@@ -396,18 +427,18 @@ export async function whois(domain: string, parse: boolean = false, options: Who
     }
 
     if (server == '') {
-        let serverData = getWhoIsServer(tld);
+        let serverData = isIp ? undefined : getWhoIsServer(tld);
         if (!serverData) {
-            console.debug(`No WhoIs server found for TLD: ${tld}! Attempting IANA WhoIs database for server!`);
-            serverData = await findWhoIsServer(tld);
+            logger.debug(`No WhoIs server found for TLD: ${tld}! Attempting IANA WhoIs database for server!`);
+            serverData = await findWhoIsServer(tld, logger);
             if (!serverData) {
-                console.debug('WhoIs server could not be found!');
+                logger.debug('WhoIs server could not be found!');
                 return {
                     _raw: '',
                     parsedData: null
                 };
             }
-            console.debug(`WhoIs sever found for ${tld}: ${server}`);
+            logger.debug(`WhoIs sever found for ${tld}: ${server}`);
         }
 
         server = serverData;
@@ -435,6 +466,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
                     parsedData: parsedData
                 };
             } catch (err) {
+                logger.info(err);
                 return {
                     _raw: rawData,
                     parsedData: null
@@ -443,6 +475,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
             
         }
     } catch (err) {
+        logger.info(err);
         return {
             _raw: '',
             parsedData: null
@@ -463,7 +496,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
  * @returns Array of {@link WhoIsResponse} for all the domains. Order is not guaranteed
  */
 export async function batchWhois(domains: string[], parallel: boolean = false, threads: number = 1, parse: boolean = false, options: WhoIsOptions | null = null): Promise<WhoIsResponse[]> {
-    var response: WhoIsResponse[] = [];
+    let response: WhoIsResponse[] = [];
 
     if (parallel) {
         if (threads > domains.length) {
