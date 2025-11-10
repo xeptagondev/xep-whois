@@ -317,7 +317,7 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
     const encoder = new TextEncoder();
     if (!proxy) {
         const socket = new Net.Socket();
-        let ret = '';
+        let response = '';
         return new Promise((resolve, reject) => {
             try {
                 socket.connect({port: port, host: server, noDelay: false}, function() {
@@ -331,7 +331,7 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
                 });
 
                 socket.on('data', (data) => {
-                    ret = ret + decoder.decode(data);
+                    response = response + decoder.decode(data);
                 });
 
                 socket.on('error', (error) => {
@@ -339,7 +339,7 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
                 });
 
                 socket.on('end', () => {
-                    resolve(ret);
+                    resolve(response);
                 });
             } catch (e){
                 reject(e);
@@ -375,6 +375,8 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
                         reject(new Error('No socket info received!'));
                     }
 
+                    let response = ''
+
                     if (queryOptions != '') {
                         info?.socket.write(
                             encoder.encode(`${queryOptions} ${domain}\r\n`)
@@ -386,7 +388,11 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
                     }
 
                     info?.socket.on('data', (data) => {
-                        resolve(decoder.decode(data));
+                        response = response + decoder.decode(data);
+                    });
+
+                    info?.socket.on('end', () => {
+                        resolve(response);
                     });
 
                     info?.socket.resume();
