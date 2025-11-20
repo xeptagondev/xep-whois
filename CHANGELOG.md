@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/xeptagondev/xep-whois/compare/v1.1.3...v1.1.4) (2025-11-20)
+
+
+### Bug Fixes
+
+* CICD Test for NPM Publish ([0215e7a](https://github.com/xeptagondev/xep-whois/commit/0215e7a87f6daefdd64672897a0db2934fcb6014))
+
 ## [1.1.3](https://github.com/xeptagondev/xep-whois/compare/v1.1.2...v1.1.3) (2025-11-20)
 
 
