@@ -211,7 +211,7 @@ export interface WhoIsOptions {
 }
 
 /**
- * Response returned from whois function. Contains the raw text from WhoIs server and parsed/fornatted WhoIs data (if parsed is true)
+ * Response returned from whois function. Contains the raw text from WhoIs server and parsed/formatted WhoIs data (if parsed is true)
  * 
  * @interface
  */
@@ -403,7 +403,7 @@ export async function tcpWhois(domain: string, queryOptions: string, server: str
 }
 
 /**
- * Collect WhoIs data for the mentioned {@link domain}. Parse the reveived response if {@link parse} is true, accordingly.
+ * Collect WhoIs data for the mentioned {@link domain}. Parse the received response if {@link parse} is true, accordingly.
  *
  * @param domain Domain name
  * @param parse Whether the raw text needs to be parsed/formatted or not
@@ -495,7 +495,7 @@ export async function whois(domain: string, parse: boolean = false, options: Who
  * If a proxy is mentioned in {@link options}, then the proxy will be used to collect <b>all</b> the WhoIs data.
  * 
  * @param domains Domains Names
- * @param parallel Whether data should be collected parallally or not
+ * @param parallel Whether data should be collected in parallel or not
  * @param threads Batch size (for parallel processing)
  * @param parse Whether the raw text needs to be parsed/formatted or not
  * @param options {@link WhoIsOptions}
