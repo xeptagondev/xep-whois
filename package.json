@@ -33,7 +33,7 @@
   },
   "scripts": {
     "devBuild": "yarn install && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
-    "build": "yarn install --production && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublishOnly": "yarn install --production && yarn run build",
     "test": "jest --coverage"
   },
