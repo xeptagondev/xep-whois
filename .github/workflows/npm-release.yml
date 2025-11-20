@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
+      
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
