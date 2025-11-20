@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/xeptagondev/xep-whois/compare/v1.1.2...v1.1.3) (2025-11-20)
+
+
+### Bug Fixes
+
+* minor wording fixes ([1f477d2](https://github.com/xeptagondev/xep-whois/commit/1f477d2a7e64887052de5c9dd3c75c59b835a2fc))
+
 ## [1.1.2](https://github.com/xeptagondev/xep-whois/compare/v1.1.1...v1.1.2) (2025-11-19)
 
 
