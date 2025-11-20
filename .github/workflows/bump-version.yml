@@ -1,4 +1,4 @@
-name: Production Release with Semantic Versioning
+name: Semantic Versioning
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  release:
+  bump-version:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install semantic-release and plugins globally
         run: |
@@ -31,5 +31,4 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: semantic-release
