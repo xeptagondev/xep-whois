@@ -275,7 +275,7 @@ export class WhoIsParser {
     }
 
     /**
-     * Parse the raw WhoIs text and returns extracted values
+     * Parse the raw WhoIs text and return extracted values
      * 
      * @param rawData raw text from WhoIs server
      * @param outputData Data which needs to be extracted from the raw text (key/value pairs). Keys are used to extract from raw text and values are filled.
