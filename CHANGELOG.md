@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/xeptagondev/xep-whois/compare/v1.1.4...v1.2.0) (2025-11-21)
+
+
+### Features
+
+* update to support node above version 18 ([902dd85](https://github.com/xeptagondev/xep-whois/commit/902dd854c74d38a298385841ce6c9899a037ca6d))
+
 ## [1.1.4](https://github.com/xeptagondev/xep-whois/compare/v1.1.3...v1.1.4) (2025-11-20)
 
 
