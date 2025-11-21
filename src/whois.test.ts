@@ -43,7 +43,7 @@ describe('whois test by domain name', () => {
 
         const res = await whois(domain, true, options, logger);
 
-        expect(logger.info).toBeCalledWith(new Error('connect ECONNREFUSED 127.0.0.1:4145'));
+        expect(logger.info).toHaveBeenCalledWith(new Error('connect ECONNREFUSED 127.0.0.1:4145'));
     });
 
     test('whois (proxy data provided - With auth)', async () => {
@@ -65,7 +65,7 @@ describe('whois test by domain name', () => {
 
         const res = await whois(domain, true, options, logger);
 
-        expect(logger.info).toBeCalledWith(new Error('connect ECONNREFUSED 127.0.0.1:6397'));
+        expect(logger.info).toHaveBeenCalledWith(new Error('connect ECONNREFUSED 127.0.0.1:6397'));
     });
 
     test('batch whois (parse data defined)', async () => {
@@ -107,7 +107,7 @@ describe('whois test by IP', () => {
 
         const res = await whois(domain, true, null, logger);
 
-        expect(logger.debug).toBeCalledTimes(2);
+        expect(logger.debug).toHaveBeenCalledTimes(2);
         expect(res._raw.length>400).toBe(true);
     });
 });

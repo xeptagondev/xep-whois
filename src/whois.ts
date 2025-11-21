@@ -1,12 +1,10 @@
 import { SocksClient, SocksClientOptions } from 'socks';
 import Net from 'net';
 
-const fetch = require('node-fetch');
 const SERVERS = require('./../whois-servers.json');
 const PARAMETERS = require('./../parameters.json');
 
 const IANA_CHK_URL = 'https://www.iana.org/whois?q=';
-
 
 export type LoggerInterface = {
     info(...data: any[]): void;
